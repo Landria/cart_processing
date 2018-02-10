@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-# Cart processing (checkout)
+require 'cart_processing/product'
+
 module CartProcessing
-  #Checkout process
   class Checkout
     attr_accessor :cart, :pricing_rules, :errors
 

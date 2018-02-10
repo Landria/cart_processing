@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
-require 'cart_processing/version'
 require 'cart_processing/configuration'
-require 'cart_processing/text_source'
-require 'cart_processing/sql_source'
-require 'cart_processing/checkout'
 
-# Handling Cart Processing
 module CartProcessing
   class << self
     attr_writer :configuration
@@ -23,6 +18,7 @@ module CartProcessing
       yield(configuration)
     end
   end
-
-  class Product < Object.const_get("CartProcessing::#{configuration.source_class_name}Source"); end
 end
+
+require 'cart_processing/version'
+require 'cart_processing/checkout'

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module CartProcessing
-  # Settings for checkout process
   class Configuration
     attr_accessor :source_path
 
@@ -14,11 +13,15 @@ module CartProcessing
     end
 
     def source_class_name
-      source.to_s.split('_').map(&:capitalize!).join('')
+      "CartProcessing::#{source.to_s.split('_').map(&:capitalize!).join('')}Source" unless source.nil?
     end
 
     def source
       @source || DEFAULT_SOURCE
+    end
+
+    def source_file_name
+      "#{source}_source" unless source.nil?
     end
 
     def source=(source_type)

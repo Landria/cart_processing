@@ -4,7 +4,6 @@ require 'cart_processing/base_source'
 require 'csv'
 
 module CartProcessing
-  # Handling CSV data
   class TextSource
     include BaseSource
 
