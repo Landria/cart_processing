@@ -18,13 +18,18 @@ RSpec.describe 'Checkout' do
       subject = CartProcessing::Checkout.new
       expect { subject.scan('VOUCHER') }.to raise_error(CartProcessing::Errors::InvalidSource)
     end
+
+    it 'with unavailable source type' do
+      config = CartProcessing.configuration
+      expect { config.source = :sql }.to raise_error(CartProcessing::Errors::UnavailableSourceType)
+    end
   end
 
   describe '.total' do
     before(:all) do
       CartProcessing.configure do |c|
         c.source = :text
-        c.source_path = 'spec/cart_processing/test_products.csv'
+        c.source_path = 'spec/cart_processing/test_data/test_products.csv'
       end
     end
 
@@ -97,6 +102,20 @@ RSpec.describe 'Checkout' do
         subject.scan('TSHIRT')
 
         expect(subject.total).to eq('74.50€')
+      end
+
+      it 'applies last passed rule for a product' do
+        pricing_rules = [
+          CartProcessing::TwoForOnePricing.new('VOUCHER'),
+          CartProcessing::XMorePricing.new('VOUCHER', 3, 2.0)
+        ]
+        subject = CartProcessing::Checkout.new(pricing_rules)
+        subject.scan('VOUCHER')
+        subject.scan('VOUCHER')
+        subject.scan('VOUCHER')
+        subject.scan('VOUCHER')
+
+        expect(subject.total).to eq('8.00€')
       end
     end
   end

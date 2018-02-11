@@ -38,4 +38,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec', '~> 3.0'
 
   spec.add_runtime_dependency     'csv'
+
+  spec.required_ruby_version = '>= 2.4.1'
 end

@@ -4,6 +4,7 @@ require 'cart_processing/configuration'
 require 'errors/configuration'
 require 'errors/invalid_source'
 require 'errors/product_not_found'
+require 'errors/unavailable_source_type'
 
 module CartProcessing
   class << self

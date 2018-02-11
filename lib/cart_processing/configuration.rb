@@ -4,7 +4,7 @@ module CartProcessing
   class Configuration < StandardError
     attr_accessor :source_path
 
-    AVAILABLE_SOURCE_TYPES = %i[text sql].freeze
+    AVAILABLE_SOURCE_TYPES = %i[text].freeze
     DEFAULT_SOURCE = :text
 
     def initialize
@@ -25,7 +25,8 @@ module CartProcessing
     end
 
     def source=(source_type)
-      @source = source_type if AVAILABLE_SOURCE_TYPES.include?(source_type)
+      raise Errors::UnavailableSourceType, "Please use available source types: #{AVAILABLE_SOURCE_TYPES.join(',')}" unless AVAILABLE_SOURCE_TYPES.include?(source_type)
+      @source = source_type
       @source ||= DEFAULT_SOURCE
     end
   end
