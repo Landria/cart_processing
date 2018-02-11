@@ -15,7 +15,7 @@ RSpec.describe 'Checkout' do
 
     context 'with rules' do
       it 'do not apply rules' do
-        pricing_rules = {}
+        pricing_rules = []
         subject = CartProcessing::Checkout.new(pricing_rules)
         subject.scan('VOUCHER')
         subject.scan('TSHIRT')
@@ -25,7 +25,7 @@ RSpec.describe 'Checkout' do
       end
 
       it 'handles nonexisting products' do
-        pricing_rules = {}
+        pricing_rules = [CartProcessing::XMorePricing.new('TSHIRT', 3, 19.0)]
         subject = CartProcessing::Checkout.new(pricing_rules)
         subject.scan('TSHIRT')
         subject.scan('MUG')
@@ -34,8 +34,8 @@ RSpec.describe 'Checkout' do
         expect(subject.total).to eq('27.50€')
       end
 
-      it 'applies 2-for-one for VOUCHERSs' do
-        pricing_rules = {}
+      it 'applies 2-for-one for VOUCHERs' do
+        pricing_rules = CartProcessing::TwoForOnePricing.new('VOUCHER')
         subject = CartProcessing::Checkout.new(pricing_rules)
         subject.scan('VOUCHER')
         subject.scan('TSHIRT')
@@ -45,7 +45,7 @@ RSpec.describe 'Checkout' do
       end
 
       it 'applies x-more rule for TSHIRTs' do
-        pricing_rules = {}
+        pricing_rules = CartProcessing::XMorePricing.new('TSHIRT', 3, 19.0)
         subject = CartProcessing::Checkout.new(pricing_rules)
         subject.scan('TSHIRT')
         subject.scan('TSHIRT')
@@ -57,7 +57,10 @@ RSpec.describe 'Checkout' do
       end
 
       it 'applies both x-more and 2-for-1' do
-        pricing_rules = {}
+        pricing_rules = [
+          CartProcessing::XMorePricing.new('TSHIRT', 3, 19.0),
+          CartProcessing::TwoForOnePricing.new('VOUCHER')
+        ]
         subject = CartProcessing::Checkout.new(pricing_rules)
         subject.scan('VOUCHER')
         subject.scan('TSHIRT')

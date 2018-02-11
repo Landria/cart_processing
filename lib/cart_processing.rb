@@ -22,3 +22,5 @@ end
 
 require 'cart_processing/version'
 require 'cart_processing/checkout'
+require 'cart_processing/two_for_one_pricing'
+require 'cart_processing/x_more_pricing'

@@ -34,9 +34,18 @@ CartProcessing.configure do |config|
 end
 ```
 
-And then
+### Using
+
+You can set up two type of pricing policies:
+  - XMoreProcing if you want to set a discount to specific product over x items.
+  - TwoForOnePricing if you want to offer every second item for free
 
 ```
+pricing_rules = [
+  CartProcessing::XMorePricing.new('TSHIRT', 3, 19.0),
+  CartProcessing::TwoForOnePricing.new('VOUCHER')
+]
+
 co = CartProcessing::Checkout.new(pricing_rules)
 co.scan("VOUCHER")
 co.scan("VOUCHER")
@@ -48,11 +57,11 @@ price = co.total
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/cart_processing. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/landria/cart_processing. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 
