@@ -7,6 +7,8 @@ module CartProcessing
     attr_accessor :cart, :pricing_policies, :errors
 
     def initialize(*pricing_policies)
+      raise Errors::Configuration, 'Source path is missing!' unless CartProcessing.configuration.source_path
+
       @pricing_policies = pricing_policies.flatten
       @cart = {}
       @errors = []
@@ -18,8 +20,11 @@ module CartProcessing
       else
         product = apply_pricing_policy(Product.find_by(:code, product_code))
       end
-
-      cart[product_code] = product if product
+      if product
+        cart[product_code] = product
+      else
+        errors << Errors::ProductNotFound.new("Product with code '#{product_code}' is not found")
+      end
     end
 
     def total

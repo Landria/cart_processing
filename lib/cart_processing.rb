@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 require 'cart_processing/configuration'
+require 'errors/configuration'
+require 'errors/invalid_source'
+require 'errors/product_not_found'
 
 module CartProcessing
   class << self

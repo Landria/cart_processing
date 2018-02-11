@@ -3,7 +3,31 @@
 require 'spec_helper'
 
 RSpec.describe 'Checkout' do
+  describe 'errors handling' do
+    it 'with empty source' do
+      CartProcessing.reset
+      expect { CartProcessing::Checkout.new }.to raise_error(CartProcessing::Errors::Configuration)
+    end
+
+    it 'with wrong source' do
+      CartProcessing.configure do |c|
+        c.source = :text
+        c.source_path = 'wrong/file/path'
+      end
+
+      subject = CartProcessing::Checkout.new
+      expect { subject.scan('VOUCHER') }.to raise_error(CartProcessing::Errors::InvalidSource)
+    end
+  end
+
   describe '.total' do
+    before(:all) do
+      CartProcessing.configure do |c|
+        c.source = :text
+        c.source_path = 'spec/cart_processing/test_products.csv'
+      end
+    end
+
     it 'counts without rules' do
       subject = CartProcessing::Checkout.new
       subject.scan('VOUCHER')
@@ -32,6 +56,8 @@ RSpec.describe 'Checkout' do
         subject.scan('SUPERMUG')
 
         expect(subject.total).to eq('27.50€')
+        expect(subject.errors).to include CartProcessing::Errors::ProductNotFound
+        expect(subject.errors.last.message).to eq "Product with code 'SUPERMUG' is not found"
       end
 
       it 'applies 2-for-one for VOUCHERs' do

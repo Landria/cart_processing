@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module CartProcessing
-  class Configuration
+  class Configuration < StandardError
     attr_accessor :source_path
 
     AVAILABLE_SOURCE_TYPES = %i[text sql].freeze

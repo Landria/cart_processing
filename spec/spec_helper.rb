@@ -17,10 +17,4 @@ RSpec.configure do |config|
   end
 
   config.color = true
-  config.before(:all) do
-    CartProcessing.configure do |c|
-      c.source = :text
-      c.source_path = 'spec/cart_processing/test_products.csv'
-    end
-  end
 end

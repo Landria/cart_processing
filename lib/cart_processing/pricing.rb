@@ -9,7 +9,7 @@ module CartProcessing
     end
 
     def sub_total(quantity)
-      price * quantity
+      price.to_f * quantity
     end
   end
 end

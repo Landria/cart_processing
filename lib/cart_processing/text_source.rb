@@ -18,6 +18,8 @@ module CartProcessing
           data = row.to_a.to_h
           return new(object_wrapper(data)) if data.fetch(attr.to_sym) == value
         end
+      rescue Errno::ENOENT, NoMethodError
+        raise Errors::InvalidSource, 'Text source is invalid'
       end
 
       def all
@@ -28,14 +30,13 @@ module CartProcessing
 
       def csv_data
         data = []
-
         CSV.foreach(connection, headers: true, header_converters: :symbol, converters: :all) do |row|
           data << row.to_a.to_h
         end
+
         data
-      rescue Errno::ENOENT => e
-        puts e.inspect
-        data
+      rescue Errno::ENOENT, NoMethodError
+        raise Errors::InvalidSource, 'Text source is invalid'
       end
 
       def object_wrapper(data)
