@@ -2,7 +2,7 @@
 
 Simple cart processing gem (https://github.com/cabify/rubyChallenge challenge solution)
 
-Ruby version >= 2.4.1
+Ruby version >= 2.0
 
 ## Installation
 
@@ -16,37 +16,36 @@ Build the gem and install it
     $ gem build cart_processing.gemspec
     $ gem install ./cart_processing-0.1.0.gem
 
-## Usage
-
 ### Configuration
 Before test the gem copy products test data
 
-    $ cp spec/cart_processing/test_data/test_products.csv /tmp/test_products.csv
+  $ cp spec/cart_processing/test_data/test_products.csv /tmp/test_products.csv
 
 Or specify your custom products.csv file
 
 Now you can use the gem. Just add it to your .rb file
 
-```
+```ruby
 require 'cart_processing'
 ```
 
 Set checkout data source type and source path. Only :text source is available (:sql source is planned to be added).
 
-```
+```ruby
 CartProcessing.configure do |config|
   config.source = :text
   config.source_path = '/tmp/test_products.csv'
 end
 ```
 
-### Using
+### Usage
 
 You can set up two types of pricing policies:
+
   - *XMorePricing* if you want to set a discount to specific product over x items.
   - *TwoForOnePricing* if you want to offer every second item for free
 
-```
+```ruby
 pricing_rules = [
   CartProcessing::XMorePricing.new('TSHIRT', 3, 19.0),
   CartProcessing::TwoForOnePricing.new('VOUCHER')
@@ -73,12 +72,23 @@ If several pricing rules passed for the same product only the last one will be a
 
 If several products with the same code exists only the first one will be found (we assume that products are uniq.
 
-If nonexisting product code scanned error will be added to CartProcerssing::Checkout instance.
+If nonexisting product code scanned error will be added to CartProcerssing::Checkout instance. Error is not raised cause that type of errors is noncritical for calculations.
+When using the gem developer have to decide how to handle such errors: interrupt whole the process or just show warning on product scan.
 
 Error is to be raised when
+
   - gem is not configured,
   - source is unreachable,
   - source type is unavailable.
+
+Gem could be improved with products pricing rules factory. Ex:
+
+```ruby
+pricing_rules = [
+  CartProcessing::TshirtXMorePricingRule.new(3, 19.0),
+  CartProcessing::MugTwoForOnePricingRule.new
+]
+```
 
 ## Development
 

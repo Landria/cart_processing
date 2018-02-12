@@ -15,7 +15,7 @@ module CartProcessing
     class << self
       def find_by(attr, value)
         CSV.foreach(connection, headers: true, header_converters: :symbol, converters: :all) do |row|
-          data = row.to_a.to_h
+          data = Hash[row.to_a]
           return new(object_wrapper(data)) if data.fetch(attr.to_sym) == value
         end
       rescue Errno::ENOENT, NoMethodError
